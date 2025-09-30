@@ -1,0 +1,75 @@
+DissolvePanelShowcase {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: center;
+    align-items: center;
+
+    .animate {
+        transition: all 0.2s ease-out;
+        transform: scale(1) rotate(0deg);
+
+        &:hover {
+            transform: scale(1.2) rotate(5deg);
+        }
+
+        &:active {
+            transform: scale(1.1) rotate(5deg);
+        }
+    }
+
+    .placeholder {
+        width: 300px;
+        height: 450px;
+        aspect-ratio: 300 / 450;
+        pointer-events: all;
+        background-size: contain;
+        background-repeat: no-repeat;
+    }
+
+    > .panels {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 50px;
+        pointer-events: all;
+    }
+
+    > .controls {
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        bottom: 25px;
+        height: 200px;
+        background-color: rgba(black, 0.7);
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+
+        > .group {
+            flex-direction: column;
+            gap: 20px;
+            color: wheat;
+            font-weight: 600;
+
+            > label {
+                width: 100%;
+                text-align: center;
+            }
+
+            > .dropdown {
+                width: 300px;
+                height: 50px;
+                pointer-events: all;
+                justify-content: center;
+                align-items: center;
+                border: 2px solid white;
+                border-radius: 10px;
+                color: white;
+            }
+        }
+    }
+}

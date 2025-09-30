@@ -1,0 +1,8 @@
+PostprocessableRoot {
+    pointer-events: none;
+
+    > .Root {
+        position: absolute;
+        justify-content: center;
+    }
+}

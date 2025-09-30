@@ -1,0 +1,175 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using PostprocessPanel;
+@inherits PanelComponent
+@attribute [Category("Postprocessable Examples")]
+@namespace Sandbox
+
+<root>
+	<div class="panels">
+		<PostprocessablePanel @ref="PostprocessPanel">
+			<Body>
+				<Card></Card>
+			</Body>
+			<Display>
+				<div class="placeholder animate">
+				</div>
+			</Display>
+		</PostprocessablePanel>
+		<Card class="animate"></Card>
+	</div>
+	<div class="controls">
+		<div class="group">
+			<label>Compute Type</label>
+			<DropDown @ref="ComputeDropdown"></DropDown>
+		</div>
+		<div class="group" Tooltip="Modifies strength of an effect ( crt, dissolve )" style="width:300px;">
+			<label>Value</label>
+			@if ((string)ComputeDropdown.Selected.Value == "example shaders/dissolve.shader")
+			{
+				<SliderControl Value:bind=@Value Min=@(0) Max=@(1) Step=@(0.05f)>></SliderControl>
+			}
+			else if ((string)ComputeDropdown.Selected.Value == "example shaders/crtwarp.shader")
+			{
+				<SliderControl Value:bind=@Value Min=@(0.1f) Max=@(7) Step=@(0.05f)>></SliderControl>
+			}
+		</div>
+		<div class="group" style="width:300px;">
+			<label>Texture padding (x then y)</label>
+			<SliderControl Tooltip="Chance texture padding along x axis" Value:bind=@TexturePaddingX Min=@(0) Max=@(100) Step=@(1)>></SliderControl>
+			<SliderControl Tooltip="Chance texture padding along y axis" Value:bind=@TexturePaddingY Min=@(0) Max=@(100) Step=@(1)>></SliderControl>
+		</div>
+	</div>
+</root>
+
+@code
+{
+	[Property]
+	[Range(0f, 7f), Step(0.05f)]
+	public float Value { get; set; } = 1f;
+
+	[Property]
+	public Vector2Int TexturePadding { get; set; }
+
+	[Property]
+	public Texture NoiseTexture { get; set; }
+
+	private int TexturePaddingX
+	{
+		get => TexturePadding.x;
+		set
+		{
+			TexturePadding = TexturePadding.WithX(value);
+		}
+	}
+
+	private int TexturePaddingY
+	{
+		get => TexturePadding.y;
+		set
+		{
+			TexturePadding = TexturePadding.WithY(value);
+		}
+	}
+
+	private const string SHADERS_PATH = "example shaders";
+
+	private DropDown ComputeDropdown;
+
+	PostprocessablePanel PostprocessPanel { get; set; }
+	ComputeShader Compute { get; set; }
+
+	protected override void OnTreeFirstBuilt()
+	{
+		SubscribeCallbacks();
+	}
+
+	protected override void OnDisabled()
+	{
+		UnsubscribeCallbacks();
+	}
+
+	private void UnsubscribeCallbacks()
+	{
+		if (PostprocessPanel.IsReady())
+			PostprocessPanel.OnRendering -= OnRendering;
+
+		if (ComputeDropdown.IsValid())
+			ComputeDropdown.ValueChanged -= OnOptionSelected;
+	}
+
+	private void SubscribeCallbacks()
+	{
+		if (PostprocessPanel.IsReady())
+			PostprocessPanel.OnRendering += OnRendering;
+
+		if (ComputeDropdown.IsValid())
+		{
+			ComputeDropdown.ValueChanged += OnOptionSelected;
+			BuildOptions();
+		}
+	}
+
+	private void OnRendering()
+	{
+		if (PostprocessPanel.IsReady is false || Compute is null)
+			return;
+
+		if (Components.TryGet<ScreenPanel>(out var screenPanel))
+		{
+			PostprocessPanel.UpdateRootSettingsFrom(screenPanel);
+		}
+
+		PostprocessPanel.TexturePadding = TexturePadding;
+
+		RenderAttributes attributes = PostprocessPanel.Attributes;
+
+		attributes.Set("NoiseTexture", NoiseTexture);
+		attributes.Set("DissolveStrength", Value);
+		attributes.Set("Curvature", Value);
+
+		PostprocessPanel.DispatchCompute(Compute);
+	}
+
+	private void BuildOptions()
+	{
+		if (FileSystem.Mounted.DirectoryExists(SHADERS_PATH) is false)
+		{
+			Log.Warning("Example shader directory does not exist!");
+			return;
+		}
+
+		foreach (var shader_name in FileSystem.Mounted.FindFile(SHADERS_PATH))
+		{
+			if (shader_name.EndsWith("_c"))
+				continue;
+
+			int extension = shader_name.LastIndexOf(".shader");
+			string name = shader_name.Remove(extension, shader_name.Length - extension);
+
+			string path = SHADERS_PATH + "/" + shader_name;
+
+			ComputeDropdown.Options.Add(new(name, path));
+
+			Log.Info($"Added {name} with path: {path.QuoteSafe()}");
+		}
+
+		ComputeDropdown.Selected = ComputeDropdown.Options[1];
+	}
+
+	private void OnOptionSelected(string value)
+	{
+		if (FileSystem.Mounted.FileExists(value) is false)
+		{
+			Log.Warning($"{value} does not exist!");
+			return;
+		}
+
+		Compute = new(value);
+	}
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(Value, TexturePadding, NoiseTexture, ComputeDropdown?.Selected ?? null);
+}
