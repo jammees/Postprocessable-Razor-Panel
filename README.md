@@ -103,19 +103,19 @@ The raw texture's name is `RawTexture`.
 
 ### PostprocessablePanel
 
-#### Body `RenderFragment`
+#### __Body__ `RenderFragment`
 
 Used to get reference the _body panel_, which will
 be rendered in a separate root.
 
-#### Display `RenderFragment`
+#### __Display__ `RenderFragment`
 
 Used to get reference the _display panel_, which will
 display the processed texture.
 
 Please see the [Some caviats](#some-caviats) section
 
-#### Attributes `RenderAttributes`
+#### __Attributes__ `RenderAttributes`
 
 Reference to the rendering root's render attributes. This is used
 to store the references to the _raw_, the _processed_ textures and
@@ -123,16 +123,16 @@ other values that the compute shaders need access to.
 
 This is cleared between every frame!
 
-#### HasDisplayPanel `bool`
+#### __HasDisplayPanel__ `bool`
 
 Do we have our display panel?
 
-#### HasBodyPanel `bool`
+#### __HasBodyPanel__ `bool`
 
 Do we have our body panel, that is rendered to
 a texture?
 
-#### IsReady `bool`
+#### __IsReady__ `bool`
 
 Think of it as the `IsValid` field. Tells if the processable
 panel and the rendering root is valid.
@@ -141,36 +141,36 @@ To be in parity with `IsValid` an `IsReady` extension method
 exists, that checks first if the panel is null and then the
 `IsReady`.
 
-#### TextureSize `Vector2Int`
+#### __TextureSize__ `Vector2Int`
 
 How big is the raw texture, which includes padding. This is
 determined by how big the _body panel_ is.
 
-#### TexturePadding `Vector2Int`
+#### __TexturePadding__ `Vector2Int`
 
 Add extra pixels for the raw texture. The _body panel_ is then
 shifted to be in the center always.
 
-#### OnRendering `Action`
+#### __OnRendering__ `Action`
 
 Dispatched after we're done rendering the body panel
 and saved it into the attributes. This is the time
 to dispatch the compute shaders to modify the texture.
 
-#### UpdateRootSettingsFrom `method`
+#### __UpdateRootSettingsFrom__ `method`
 
 Update the scale and opacity from a screen panel.
 
-#### UpdateRootSettings `method`
+#### __UpdateRootSettings__ `method`
 
 Update the scale, opacity, scaling strategy and manual scale manually.
 
-#### DispatchCompute `method`
+#### __DispatchCompute__ `method`
 
 Dispatch the provided compute shader with the `Attributes` and with `TextureSize`
-amount of threads.
+amount of threads. This is more or less a quality-of-life method.
 
-#### SetProcessedTextureName `method`
+#### __SetProcessedTextureName__ `method`
 
 Change the name of the processed texture. By default this is _"ProcessedTexture"_.
 This is useful if multiple passes of compute shaders are used.
