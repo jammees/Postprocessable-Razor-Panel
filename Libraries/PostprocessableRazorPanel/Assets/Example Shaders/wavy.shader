@@ -13,6 +13,10 @@ CS
 	// OUT
 	RWTexture2D<float4> g_tProcessed < Attribute( "ProcessedTexture" ); >;
 
+	// An example shader that makes the texture wave
+	// in the vertical axis. This shader also showcases, how
+	// to calculate UVs for a texture with an undetermined size.
+	// https://creativecommons.org/publicdomain/zero/1.0/
 	[numthreads( 8, 8, 1 )]
 	void MainCs( uint3 id : SV_DispatchThreadID )
 	{

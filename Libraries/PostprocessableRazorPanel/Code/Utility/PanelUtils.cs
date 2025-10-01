@@ -5,6 +5,7 @@ namespace PostprocessPanel;
 
 internal static class PanelUtils
 {
+	// from GameRootPanel
 	public static float GetScale( RenderingRoot root, Rect screenSize )
 	{
 		if ( root.AutoScreenScale )
