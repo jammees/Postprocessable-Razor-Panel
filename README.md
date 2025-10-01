@@ -62,6 +62,8 @@ use the `SetProcessedTextureName` method. By default, this is set to _"Processed
 
 The raw texture's name is `RawTexture`.
 
+<br>
+
 ## Example Setup
 
 ```razor
