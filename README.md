@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./Logos/wide.png" alt="Postprocessable Razor Panel Logo">
+</div>
+
 # _Postprocessable Razor Panel_
 
 A panel that allows to be modified with compute shaders to create effects that wouldn't be possible or be a hassle to set up.
