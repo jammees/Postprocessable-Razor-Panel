@@ -30,12 +30,14 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// Body fragment. This panel will be the one that gets
 	/// rendered in a separate root.
 	/// </summary>
+	[Parameter]
 	public RenderFragment Body { get; set; }
 
 	/// <summary>
 	/// Display fragment. This panel will be used to display
 	/// the rendered body onto after it was post processed.
 	/// </summary>
+	[Parameter]
 	public RenderFragment Display { get; set; }
 
 	/// <summary>
@@ -80,6 +82,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// the effect requires so. Is clamped if either axis
 	/// are below 0!
 	/// </summary>
+	[Parameter]
 	public Vector2Int TexturePadding
 	{
 		get => _root.TexturePadding;
@@ -91,6 +94,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// and saved it into the attributes. This is the time
 	/// to dispatch the compute shaders to modify the texture.
 	/// </summary>
+	[Parameter]
 	public Action OnRendering
 	{
 		get => _root.OnRendering;
@@ -201,6 +205,6 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 	private void CreateRoot()
 	{
-		_root = new( Body, Scene );
+		_root = new( Body );
 	}
 }
