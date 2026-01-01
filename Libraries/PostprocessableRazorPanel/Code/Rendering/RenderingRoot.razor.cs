@@ -59,22 +59,25 @@ public sealed partial class RenderingRoot : RootPanel
 
 	internal Panel BodyPanel => GetChild( 0 );
 
-	internal Vector2 ScaledTexturePadding => (Vector2)TexturePadding / PanelUtils.GetScale( this, Scene.Camera.ScreenRect );
+	internal Vector2 ScaledTexturePadding => (Vector2)TexturePadding / PanelUtils.GetScale( this, RendererScene.Camera.ScreenRect );
+	internal Scene RendererScene;
 
 	internal SceneCustomObject Renderer;
 
 	private RenderFragment _body;
 
-	public RenderingRoot( RenderFragment body )
+	public RenderingRoot( RenderFragment body, Scene scene )
 	{
 		_body = body;
+		RendererScene = scene;
 
 		SetupForRendering();
 	}
 
-	public RenderingRoot()
+	public RenderingRoot( Scene scene )
 	{
 		_body = ChildContent;
+		RendererScene = scene;
 
 		SetupForRendering();
 	}
@@ -116,7 +119,7 @@ public sealed partial class RenderingRoot : RootPanel
 
 		RenderedManually = true;
 
-		Renderer = new( Scene.SceneWorld );
+		Renderer = new( RendererScene.SceneWorld );
 		Renderer.Batchable = false;
 		Renderer.RenderLayer = SceneRenderLayer.OverlayWithoutDepth;
 		Renderer.RenderOverride = OnRender;

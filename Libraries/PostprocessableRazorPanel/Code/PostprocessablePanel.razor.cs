@@ -205,6 +205,6 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 	private void CreateRoot()
 	{
-		_root = new( Body );
+		_root = new( Body, Scene );
 	}
 }
