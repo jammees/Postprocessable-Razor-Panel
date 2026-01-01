@@ -65,18 +65,16 @@ public sealed partial class RenderingRoot : RootPanel
 
 	private RenderFragment _body;
 
-	public RenderingRoot( RenderFragment body, Scene scene )
+	public RenderingRoot( RenderFragment body )
 	{
 		_body = body;
-		Scene = scene;
 
 		SetupForRendering();
 	}
 
-	public RenderingRoot( Scene scene )
+	public RenderingRoot()
 	{
 		_body = ChildContent;
-		Scene = scene;
 
 		SetupForRendering();
 	}
