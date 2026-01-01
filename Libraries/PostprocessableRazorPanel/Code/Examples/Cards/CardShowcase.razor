@@ -25,11 +25,11 @@
 		</div>
 		<div class="group" Tooltip="Modifies strength of an effect ( crt, dissolve )" style="width:300px;">
 			<label>Value</label>
-			@if ((string)ComputeDropdown.Selected.Value == "example shaders/dissolve.shader")
+			@if ((string)ComputeDropdown?.Selected?.Value == "example shaders/dissolve.shader")
 			{
 				<SliderControl Value:bind=@Value Min=@(0) Max=@(1) Step=@(0.05f)>></SliderControl>
 			}
-			else if ((string)ComputeDropdown.Selected.Value == "example shaders/crtwarp.shader")
+			else if ((string)ComputeDropdown?.Selected?.Value == "example shaders/crtwarp.shader")
 			{
 				<SliderControl Value:bind=@Value Min=@(0.1f) Max=@(7) Step=@(0.05f)>></SliderControl>
 			}
