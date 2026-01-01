@@ -297,47 +297,16 @@
               "ZIndex": 100
             },
             {
-              "__type": "Sandbox.DissolvePanelShowcase",
-              "__guid": "27ef5fcd-bb58-4e6b-8cdd-10387d430b27",
+              "__type": "Sandbox.FullscreenPanelShowcase",
+              "__guid": "2a8aea59-2940-4368-b78e-03005180d887",
               "__enabled": true,
-              "NoiseTexture": {
-                "$compiler": "texture",
-                "$source": "random",
-                "data": {
-                  "Type": "Perlin",
-                  "Seed": 0,
-                  "Size": "64,64",
-                  "Offset": "0,0,0",
-                  "Scale": 5,
-                  "Octaves": 1,
-                  "Gradient": {
-                    "blend": "Linear",
-                    "color": [
-                      {
-                        "t": 0.016806724,
-                        "c": "0,0,0,1"
-                      },
-                      {
-                        "t": 1,
-                        "c": "1,1,1,1"
-                      }
-                    ],
-                    "alpha": null
-                  },
-                  "ConvertHeightToNormals": false,
-                  "NormalScale": 1,
-                  "CacheToDisk": true
-                },
-                "compiled": "textures/generated/random/54e936142eb579fe.vtex"
-              },
+              "MyStringValue": "Hello World!",
               "OnComponentDestroy": null,
               "OnComponentDisabled": null,
               "OnComponentEnabled": null,
               "OnComponentFixedUpdate": null,
               "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "TexturePadding": "5,10",
-              "Value": 1
+              "OnComponentUpdate": null
             }
           ],
           "Children": []
