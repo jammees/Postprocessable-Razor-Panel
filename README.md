@@ -1,8 +1,12 @@
+<div align="center">
+  <img src="./Logos/wide.png" alt="Postprocessable Razor Panel Logo">
+</div>
+
 # _Postprocessable Razor Panel_
 
 A panel that allows to be modified with compute shaders to create effects that wouldn't be possible or be a hassle to set up.
 
-__NOTE__: The library has not been tested with a world panel! This was written with a screen panel in mind. Howeve, in theory
+__NOTE__: The library has not been tested with a world panel! This was written with a screen panel in mind. However, in theory
 they should work just fine... (maybe)
 
 <br>
@@ -22,7 +26,7 @@ It contains 4 compute shaders as of now with different functionality:
 |--------------------------|---------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------|
 | wavy                     | Makes the panel wave in the vertical axis               | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) - jammees                                                    |
 | dissolve                 | Dissolves the panel using a noise texture               | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) - [Simple 2D dissolve](https://godotshaders.com/shader/simple-2d-dissolve/) by [godotshaders](https://godotshaders.com/)                                               |
-| crt wrap                 | Warps the panel to mimic a crt screen                   | [MIT](https://github.com/DevPoodle/yt-example-projects/blob/main/LICENSE) - [crt_screen_effect](https://github.com/DevPoodle/yt-example-projects/tree/main/crt_screen_effect) by [DevPoodle](https://github.com/DevPoodle)  |
+| crt warp                 | Warps the panel to mimic a crt screen                   | [MIT](https://github.com/DevPoodle/yt-example-projects/blob/main/LICENSE) - [crt_screen_effect](https://github.com/DevPoodle/yt-example-projects/tree/main/crt_screen_effect) by [DevPoodle](https://github.com/DevPoodle)  |
 | only green red channel   | Outputs only the red and green channels of the texture  | [CC0](https://creativecommons.org/publicdomain/zero/1.0/) - jammees                                                    |
 
 The demo scene can be found under the assets folder, while the shaders under example shaders!
