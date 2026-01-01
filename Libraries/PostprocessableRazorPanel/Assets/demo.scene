@@ -642,7 +642,7 @@
               "OnComponentFixedUpdate": null,
               "OnComponentStart": null,
               "OnComponentUpdate": null,
-              "TexturePadding": "0,0",
+              "TexturePadding": "5,8",
               "Value": 1
             }
           ],
