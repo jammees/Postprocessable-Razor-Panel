@@ -41,6 +41,34 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	public RenderFragment Display { get; set; }
 
 	/// <summary>
+	/// Add extra pixels to the render texture in case
+	/// the effect requires so. Is clamped if either axis
+	/// are below 0!
+	/// </summary>
+	[Parameter]
+	public Vector2Int TexturePadding
+	{
+		get => _root.TexturePadding;
+		set => _root.TexturePadding = value;
+	}
+
+	/// <summary>
+	/// Dispatched after we're done rendering the body panel
+	/// and saved it into the attributes. This is the time
+	/// to dispatch the compute shaders to modify the texture.
+	/// </summary>
+	[Parameter]
+	public Action OnRendering
+	{
+		get => _root.OnRendering;
+		set
+		{
+			_root.HasRenderingCallback = true;
+			_root.OnRendering = value;
+		}
+	}
+
+	/// <summary>
 	/// Reference to the attributes that holds the raw texture
 	/// of the body panel as well as other stuffs that might
 	/// be necessary for the compute shaders.
@@ -76,34 +104,6 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// the padding!
 	/// </summary>
 	public Vector2Int TextureSize => _root.TextureSize;
-
-	/// <summary>
-	/// Add extra pixels to the render texture in case
-	/// the effect requires so. Is clamped if either axis
-	/// are below 0!
-	/// </summary>
-	[Parameter]
-	public Vector2Int TexturePadding
-	{
-		get => _root.TexturePadding;
-		set => _root.TexturePadding = value;
-	}
-
-	/// <summary>
-	/// Dispatched after we're done rendering the body panel
-	/// and saved it into the attributes. This is the time
-	/// to dispatch the compute shaders to modify the texture.
-	/// </summary>
-	[Parameter]
-	public Action OnRendering
-	{
-		get => _root.OnRendering;
-		set
-		{
-			_root.HasRenderingCallback = true;
-			_root.OnRendering = value;
-		}
-	}
 
 	private string _processedLookupName;
 
