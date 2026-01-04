@@ -69,13 +69,38 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	}
 
 	/// <summary>
+	/// Sets the name of the texture that is supposed
+	/// to be final one and what will be used by
+	/// the display panel.
+	/// 
+	/// By default this is called ProcessedTexture. This
+	/// method exists in case multiple passes are required.
+	/// </summary>
+	[Parameter]
+	public string ProcessedName
+	{
+		get => _root.ProcessedTextureName;
+		set
+		{
+			if ( string.IsNullOrWhiteSpace( value ) )
+			{
+				Log.Error( "Invalid processed texture name! Defaulting to \"ProcessedTexture\"" );
+				value = "ProcessedTexture";
+			}
+
+			_root.ProcessedTextureName = value;
+			Log.Info( $"Set processed name to {_root.ProcessedTextureName}" );
+		}
+	}
+
+	/// <summary>
 	/// Reference to the attributes that holds the raw texture
 	/// of the body panel as well as other stuffs that might
 	/// be necessary for the compute shaders.
 	/// 
 	/// The key for the raw body texture is "RawTexture" and
 	/// the finalised texture is expected to have "ProcessedTexture"
-	/// by default. This can be changed with SetProcessedTextureName()!
+	/// by default. This can be changed with ProcessedName parameter!
 	/// 
 	/// This is cleared between each frame!
 	/// </summary>
@@ -105,8 +130,6 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// </summary>
 	public Vector2Int TextureSize => _root.TextureSize;
 
-	private string _processedLookupName;
-
 	internal Panel DisplayPanel => GetChild( 0 );
 
 	private RenderingRoot _root;
@@ -117,7 +140,6 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 			return;
 
 		CreateRoot();
-		SetProcessedTextureName();
 	}
 
 	public override void Tick()
@@ -127,7 +149,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 		_root.CopyPseudoClasses( this.PseudoClass );
 
-		Texture finalTexture = Attributes.GetTexture( _processedLookupName );
+		Texture finalTexture = Attributes.GetTexture( ProcessedName );
 
 		DisplayPanel.Style.SetBackgroundImage( finalTexture );
 	}
@@ -193,14 +215,10 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// method exists in case multiple passes are required.
 	/// </summary>
 	/// <param name="name"></param>
+	[Obsolete( "Use the ProcessedName parameter instead" )]
 	public void SetProcessedTextureName( string name = "ProcessedTexture" )
 	{
-		_processedLookupName = name;
-
-		if ( _root.IsValid() )
-		{
-			_root.ProcessedTextureName = _processedLookupName;
-		}
+		ProcessedName = name;
 	}
 
 	private void CreateRoot()
