@@ -32,7 +32,6 @@ public sealed partial class RenderingRoot : RootPanel
 
 	internal PostprocessablePanel ProcessablePanel;
 
-
 	public RenderingRoot( PostprocessablePanel panel )
 	{
 		ProcessablePanel = panel;
