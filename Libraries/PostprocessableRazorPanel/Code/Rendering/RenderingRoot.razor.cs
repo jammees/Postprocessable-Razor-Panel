@@ -2,7 +2,6 @@
 using Sandbox;
 using Sandbox.UI;
 using System;
-using static Sandbox.ScreenPanel;
 
 namespace PostprocessPanel;
 
