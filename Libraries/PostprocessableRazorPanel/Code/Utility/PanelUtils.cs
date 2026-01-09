@@ -8,15 +8,15 @@ internal static class PanelUtils
 	// from GameRootPanel
 	public static float GetScale( RenderingRoot root, Rect screenSize )
 	{
-		if ( root.AutoScreenScale )
+		if ( root.RootSettings.AutoScreenScale )
 		{
 			float scale = 1f;
 
-			if ( root.ScaleStrategy == AutoScale.ConsistentHeight )
+			if ( root.RootSettings.ScaleStrategy == AutoScale.ConsistentHeight )
 			{
 				scale = screenSize.Height / 1080f;
 			}
-			else if ( root.ScaleStrategy == AutoScale.FollowDesktopScaling )
+			else if ( root.RootSettings.ScaleStrategy == AutoScale.FollowDesktopScaling )
 			{
 				scale = Screen.DesktopScale;
 				float num = 1080f * Screen.DesktopScale;
@@ -39,7 +39,7 @@ internal static class PanelUtils
 			return SanitizeScale( scale );
 		}
 
-		return SanitizeScale( root.ManualScale );
+		return SanitizeScale( root.RootSettings.ManualScale );
 	}
 
 	private static float SanitizeScale( float scale )

@@ -1,13 +1,14 @@
 @using Sandbox;
 @using Sandbox.UI;
 @using PostprocessPanel;
+@using System.Collections.Generic;
 @inherits PanelComponent
 @attribute [Category("Postprocessable Examples")]
 @namespace Sandbox
 
 <root>
 	<div class="panels">
-		<PostprocessablePanel @ref="PostprocessPanel">
+		<PostprocessablePanel @ref="PostprocessPanel" OnRendering="@OnRendering" TexturePadding="@TexturePadding">
 			<Body>
 				<Card></Card>
 			</Body>
@@ -21,7 +22,7 @@
 	<div class="controls">
 		<div class="group">
 			<label>Compute Type</label>
-			<DropDown @ref="ComputeDropdown"></DropDown>
+			<DropDown Options="@BuildOptions()" ValueChanged="@OnOptionSelected" @ref="ComputeDropdown"></DropDown>
 		</div>
 		<div class="group" Tooltip="Modifies strength of an effect ( crt, dissolve )" style="width:300px;">
 			<label>Value</label>
@@ -79,48 +80,17 @@
 	PostprocessablePanel PostprocessPanel { get; set; }
 	ComputeShader Compute { get; set; }
 
-	protected override void OnTreeFirstBuilt()
-	{
-		SubscribeCallbacks();
-	}
-
-	protected override void OnDisabled()
-	{
-		UnsubscribeCallbacks();
-	}
-
-	private void UnsubscribeCallbacks()
-	{
-		if (PostprocessPanel.IsReady())
-			PostprocessPanel.OnRendering -= OnRendering;
-
-		if (ComputeDropdown.IsValid())
-			ComputeDropdown.ValueChanged -= OnOptionSelected;
-	}
-
-	private void SubscribeCallbacks()
-	{
-		if (PostprocessPanel.IsReady())
-			PostprocessPanel.OnRendering += OnRendering;
-
-		if (ComputeDropdown.IsValid())
-		{
-			ComputeDropdown.ValueChanged += OnOptionSelected;
-			BuildOptions();
-		}
-	}
-
 	private void OnRendering()
 	{
 		if (PostprocessPanel.IsReady is false || Compute is null)
 			return;
 
-		if (Components.TryGet<ScreenPanel>(out var screenPanel))
-		{
-			PostprocessPanel.UpdateRootSettingsFrom(screenPanel);
-		}
+		// if (Components.TryGet<ScreenPanel>(out var screenPanel))
+		// {
+		// 	PostprocessPanel.UpdateRootSettingsFrom(screenPanel);
+		// }
 
-		PostprocessPanel.TexturePadding = TexturePadding;
+		// PostprocessPanel.TexturePadding = TexturePadding;
 
 		RenderAttributes attributes = PostprocessPanel.Attributes;
 
@@ -131,13 +101,15 @@
 		PostprocessPanel.DispatchCompute(Compute);
 	}
 
-	private void BuildOptions()
+	private List<Option> BuildOptions()
 	{
 		if (FileSystem.Mounted.DirectoryExists(SHADERS_PATH) is false)
 		{
 			Log.Warning("Example shader directory does not exist!");
-			return;
+			return default;
 		}
+
+		List<Option> options = new();
 
 		foreach (var shader_name in FileSystem.Mounted.FindFile(SHADERS_PATH))
 		{
@@ -149,12 +121,10 @@
 
 			string path = SHADERS_PATH + "/" + shader_name;
 
-			ComputeDropdown.Options.Add(new(name, path));
-
-			Log.Info($"Added {name} with path: {path.QuoteSafe()}");
+			options.Add(new(name, path));
 		}
 
-		ComputeDropdown.Selected = ComputeDropdown.Options[1];
+		return options;
 	}
 
 	private void OnOptionSelected(string value)

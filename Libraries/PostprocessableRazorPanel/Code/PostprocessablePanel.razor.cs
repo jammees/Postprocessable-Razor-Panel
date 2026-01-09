@@ -1,6 +1,9 @@
+using PostprocessPanel.Utility;
 using Sandbox;
 using Sandbox.UI;
 using System;
+using System.Collections.Generic;
+using static System.Net.WebRequestMethods;
 
 namespace PostprocessPanel;
 
@@ -28,83 +31,94 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 {
 	/// <summary>
 	/// Body fragment. This panel will be the one that gets
-	/// rendered in a separate root.
+	/// rendered to the <see cref="Texture"/>.
 	/// </summary>
 	[Parameter]
 	public RenderFragment Body { get; set; }
 
 	/// <summary>
 	/// Display fragment. This panel will be used to display
-	/// the rendered body onto after it was post processed.
+	/// the final <see cref="Texture"/>.
 	/// </summary>
 	[Parameter]
 	public RenderFragment Display { get; set; }
 
 	/// <summary>
-	/// Add extra pixels to the render texture in case
-	/// the effect requires so. Is clamped if either axis
-	/// are below 0!
+	/// Add extra pixels to texture in case
+	/// the effect requires so. Does not go below 0
+	/// on either of the axis.
 	/// </summary>
 	[Parameter]
 	public Vector2Int TexturePadding
 	{
-		get => _root.TexturePadding;
-		set => _root.TexturePadding = value;
+		get => RootSettings.TexturePadding;
+		set => RootSettings.TexturePadding = value;
 	}
 
 	/// <summary>
-	/// Dispatched after we're done rendering the body panel
-	/// and saved it into the attributes. This is the time
-	/// to dispatch the compute shaders to modify the texture.
+	/// Called once the body is rendered onto the texture
+	/// and saved it into the <see cref="RenderAttributes"/>. This is the time
+	/// to dispatch the <see cref="ComputeShader"/> to modify the texture.
 	/// </summary>
 	[Parameter]
 	public Action OnRendering
 	{
-		get => _root.OnRendering;
-		set
-		{
-			_root.HasRenderingCallback = true;
-			_root.OnRendering = value;
-		}
+		get => RootSettings.OnRendering;
+		set => RootSettings.OnRendering = value;
 	}
 
 	/// <summary>
-	/// Sets the name of the texture that is supposed
-	/// to be final one and what will be used by
-	/// the display panel.
+	/// Name to look for in the <see cref="RenderAttributes"/> to
+	/// display it on the <see cref="Display"/> panel.
 	/// 
-	/// By default this is called ProcessedTexture. This
-	/// method exists in case multiple passes are required.
+	/// By default, this is <c>ProcessedTexture</c> stored in
+	/// <see cref="RenderingRootSettings.DEFAULT_PROCESSED_NAME"/>
 	/// </summary>
 	[Parameter]
 	public string ProcessedName
 	{
-		get => _root.ProcessedTextureName;
+		get => RootSettings.ProcessedName;
 		set
 		{
 			if ( string.IsNullOrWhiteSpace( value ) )
 			{
-				Log.Error( "Invalid processed texture name! Defaulting to \"ProcessedTexture\"" );
-				value = "ProcessedTexture";
+				Log.Error( $"Invalid processed texture name! Defaulting to \"{RenderingRootSettings.DEFAULT_PROCESSED_NAME}\"" );
+				value = RenderingRootSettings.DEFAULT_PROCESSED_NAME;
 			}
 
-			_root.ProcessedTextureName = value;
-			Log.Info( $"Set processed name to {_root.ProcessedTextureName}" );
+			RootSettings.ProcessedName = value;
 		}
 	}
 
 	/// <summary>
-	/// Reference to the attributes that holds the raw texture
-	/// of the body panel as well as other stuffs that might
-	/// be necessary for the compute shaders.
+	/// Name to look for in the <see cref="RenderAttributes"/> to
+	/// save the rendered <see cref="Texture"/> of
+	/// the <see cref="Body"/> panel.
 	/// 
-	/// The key for the raw body texture is "RawTexture" and
-	/// the finalised texture is expected to have "ProcessedTexture"
-	/// by default. This can be changed with ProcessedName parameter!
-	/// 
-	/// This is cleared between each frame!
+	/// By default, this is <c>RawTexture</c> stored in
+	/// <see cref="RenderingRootSettings.DEFAULT_RAW_NAME"/>
 	/// </summary>
-	public RenderAttributes Attributes => _root.Attributes;
+	[Parameter]
+	public string RawName
+	{
+		get => RootSettings.RawName;
+		set
+		{
+			if ( string.IsNullOrWhiteSpace( value ) )
+			{
+				Log.Error( $"Invalid processed texture name! Defaulting to \"{RenderingRootSettings.DEFAULT_RAW_NAME}\"" );
+				value = RenderingRootSettings.DEFAULT_RAW_NAME;
+			}
+
+			RootSettings.RawName = value;
+		}
+	}
+
+	/// <summary>
+	/// Stores everything needed for the <see cref="ComputeShader"/>s
+	/// and for the library.
+	/// </summary>
+	public RenderAttributes Attributes => Root.Attributes;
 
 	/// <summary>
 	/// Do we have our display panel?
@@ -115,39 +129,40 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// Do we have our body panel, that is rendered to
 	/// a texture?
 	/// </summary>
-	public bool HasBodyPanel => _root.IsValid() && _root.HasBodyPanel;
+	public bool HasBodyPanel => Root.IsValid() && Root.HasBodyPanel;
 
 	/// <summary>
 	/// Think of this as the IsValid field. Tells if the panel
 	/// has everything it needs to do its job.
 	/// </summary>
-	public bool IsReady => this.IsValid() && _root.IsValid();
+	public bool IsReady => this.IsValid() && Root.IsValid();
 
 	/// <summary>
-	/// How big is our texture that we rendered onto. This
-	/// is decided by how big the panel itself is. This includes
-	/// the padding!
+	/// How big is the texture that we use to render
+	/// the <see cref="Body"/> panel.
 	/// </summary>
-	public Vector2Int TextureSize => _root.TextureSize;
+	public Vector2Int TextureSize => Root.TextureSize;
 
 	internal Panel DisplayPanel => GetChild( 0 );
 
-	private RenderingRoot _root;
+	internal RenderingRootSettings RootSettings = new();
+
+	internal RenderingRoot Root;
 
 	protected override void OnAfterTreeRender( bool firstTime )
 	{
 		if ( firstTime is false )
 			return;
 
-		CreateRoot();
+		Root = new( Body, Scene, ref RootSettings );
 	}
 
 	public override void Tick()
 	{
-		if ( _root.IsValid() is false || _root.HasBodyPanel is false || HasDisplayPanel is false )
+		if ( Root.IsValid() is false || Root.HasBodyPanel is false || HasDisplayPanel is false )
 			return;
 
-		_root.CopyPseudoClasses( this.PseudoClass );
+		Root.CopyPseudoClasses( this.PseudoClass );
 
 		Texture finalTexture = Attributes.GetTexture( ProcessedName );
 
@@ -156,10 +171,8 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 	public override void OnDeleted()
 	{
-		_root?.Delete( immediate: true );
+		Root?.Delete( immediate: true );
 	}
-
-	public override int GetHashCode() => HashCode.Combine( _root.IsValid() );
 
 	/// <summary>
 	/// Update the scale and opacity from a screen panel
@@ -191,10 +204,10 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 		float manualOpacity = 1f
 	)
 	{
-		_root.AutoScreenScale = autoScale;
-		_root.ManualScale = manualScale;
-		_root.ScaleStrategy = scaleStrategy;
-		_root.ManualOpacity = manualOpacity;
+		RootSettings.AutoScreenScale = autoScale;
+		RootSettings.ManualScale = manualScale;
+		RootSettings.ScaleStrategy = scaleStrategy;
+		RootSettings.ManualOpacity = manualOpacity;
 	}
 
 	/// <summary>
@@ -204,7 +217,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	/// <param name="compute"></param>
 	public void DispatchCompute( ComputeShader compute )
 	{
-		compute.DispatchWithAttributes( Attributes, _root.TextureSize.x, _root.TextureSize.y, 1 );
+		compute.DispatchWithAttributes( Attributes, Root.TextureSize.x, Root.TextureSize.y, 1 );
 	}
 
 	/// <summary>
@@ -219,10 +232,5 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	public void SetProcessedTextureName( string name = "ProcessedTexture" )
 	{
 		ProcessedName = name;
-	}
-
-	private void CreateRoot()
-	{
-		_root = new( Body, Scene );
 	}
 }
