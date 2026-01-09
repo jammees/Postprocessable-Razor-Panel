@@ -1,7 +1,6 @@
 ﻿using PostprocessPanel.Utility;
 using Sandbox;
 using Sandbox.UI;
-using System;
 
 namespace PostprocessPanel;
 
