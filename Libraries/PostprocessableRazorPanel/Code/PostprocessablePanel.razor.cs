@@ -70,7 +70,7 @@ public sealed partial class PostprocessablePanel : Panel
 	/// display it on the <see cref="Display"/> panel.
 	/// 
 	/// By default, this is <c>ProcessedTexture</c> stored in
-	/// <see cref="RenderingRootSettings.DEFAULT_PROCESSED_NAME"/>
+	/// <see cref="RenderingRootSettings.DEFAULT_PROCESSED_NAME"/>.
 	/// </summary>
 	[Parameter]
 	public string ProcessedName
@@ -174,11 +174,10 @@ public sealed partial class PostprocessablePanel : Panel
 	[Obsolete( "Use AutoScaling instead" )]
 	public void UpdateRootSettingsFrom( ScreenPanel screenPanel )
 	{
-		UpdateRootSettings(
+		UpdateScaling(
 			screenPanel.AutoScreenScale,
 			screenPanel.Scale,
-			screenPanel.ScaleStrategy,
-			screenPanel.Opacity
+			screenPanel.ScaleStrategy
 		);
 	}
 
@@ -190,18 +189,15 @@ public sealed partial class PostprocessablePanel : Panel
 	/// <param name="autoScale">Determine scale with the scaling strategy or with the manual scale</param>
 	/// <param name="manualScale">If auto scale is off use this value to scale the panel</param>
 	/// <param name="scaleStrategy">If auto scale is on, depending on the value set figure out scaling</param>
-	/// <param name="manualOpacity">What opacity should the body panel be rendered?</param>
-	public void UpdateRootSettings(
+	public void UpdateScaling(
 		bool autoScale = true,
 		float manualScale = 1f,
-		ScreenPanel.AutoScale scaleStrategy = ScreenPanel.AutoScale.ConsistentHeight,
-		float manualOpacity = 1f
+		ScreenPanel.AutoScale scaleStrategy = ScreenPanel.AutoScale.ConsistentHeight
 	)
 	{
 		RootSettings.AutoScreenScale = autoScale;
 		RootSettings.ManualScale = manualScale;
 		RootSettings.ScaleStrategy = scaleStrategy;
-		RootSettings.ManualOpacity = manualOpacity;
 	}
 
 	/// <summary>

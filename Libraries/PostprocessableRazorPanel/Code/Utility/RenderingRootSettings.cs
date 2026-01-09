@@ -20,8 +20,6 @@ public class RenderingRootSettings()
 
 	public string RawName { get; set; } = DEFAULT_RAW_NAME;
 
-	public float ManualOpacity { get; set; } = 1f;
-
 	public float ManualScale { get; set; } = 1f;
 
 	public bool AutoScreenScale { get; set; } = true;

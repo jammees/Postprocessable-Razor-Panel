@@ -112,7 +112,7 @@ public sealed partial class RenderingRoot : RootPanel
 		Graphics.RenderTarget = target;
 		Graphics.Clear( Color.Transparent );
 
-		RenderManual( RootSettings.ManualOpacity );
+		RenderManual( opacity: 1f );
 
 		Texture processedTexture = Texture.Create( TextureSize.x, TextureSize.y, ImageFormat.RGBA8888 )
 			.WithUAVBinding()
