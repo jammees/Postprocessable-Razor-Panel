@@ -84,13 +84,6 @@
 		if (panel.IsReady is false || Compute is null)
 			return;
 
-		// if (Components.TryGet<ScreenPanel>(out var screenPanel))
-		// {
-		// 	PostprocessPanel.UpdateRootSettingsFrom(screenPanel);
-		// }
-
-		// PostprocessPanel.TexturePadding = TexturePadding;
-
 		RenderAttributes attributes = panel.Attributes;
 
 		attributes.Set("NoiseTexture", NoiseTexture);
