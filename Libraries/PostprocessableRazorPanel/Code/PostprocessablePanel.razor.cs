@@ -2,8 +2,6 @@ using PostprocessPanel.Utility;
 using Sandbox;
 using Sandbox.UI;
 using System;
-using System.Collections.Generic;
-using static System.Net.WebRequestMethods;
 
 namespace PostprocessPanel;
 
@@ -96,7 +94,7 @@ public sealed partial class PostprocessablePanel : Panel
 	/// the <see cref="Body"/> panel.
 	/// 
 	/// By default, this is <c>RawTexture</c> stored in
-	/// <see cref="RenderingRootSettings.DEFAULT_RAW_NAME"/>
+	/// <see cref="RenderingRootSettings.DEFAULT_RAW_NAME"/>.
 	/// </summary>
 	[Parameter]
 	public string RawName
@@ -113,6 +111,13 @@ public sealed partial class PostprocessablePanel : Panel
 			RootSettings.RawName = value;
 		}
 	}
+
+	/// <summary>
+	/// Tries to find the closest <see cref="ScreenPanel"/>
+	/// to use the scaling from.
+	/// </summary>
+	[Parameter]
+	public bool AutoScale { get; set; } = true;
 
 	/// <summary>
 	/// Stores everything needed for the <see cref="ComputeShader"/>s
@@ -153,9 +158,8 @@ public sealed partial class PostprocessablePanel : Panel
 
 		Root.CopyPseudoClasses( this.PseudoClass );
 
-		Texture finalTexture = Attributes.GetTexture( ProcessedName );
-
-		DisplayPanel.Style.SetBackgroundImage( finalTexture );
+		UpdateAutoScaling();
+		ApplyBackground();
 	}
 
 	public override void OnDeleted()
@@ -167,6 +171,7 @@ public sealed partial class PostprocessablePanel : Panel
 	/// Update the scale and opacity from a screen panel
 	/// </summary>
 	/// <param name="screenPanel"></param>
+	[Obsolete( "Use AutoScaling instead" )]
 	public void UpdateRootSettingsFrom( ScreenPanel screenPanel )
 	{
 		UpdateRootSettings(
@@ -221,5 +226,33 @@ public sealed partial class PostprocessablePanel : Panel
 	public void SetProcessedTextureName( string name = "ProcessedTexture" )
 	{
 		ProcessedName = name;
+	}
+
+	private void UpdateAutoScaling()
+	{
+		if ( AutoScale is false )
+			return;
+
+		RootPanel root = FindRootPanel();
+		if ( root.IsValid() is false || root.GameObject.IsValid() is false )
+			return;
+
+		GameObject rootObject = root.GameObject;
+
+		if ( rootObject.Components.TryGet<ScreenPanel>( out var screenRoot ) )
+		{
+			UpdateScaling(
+				screenRoot.AutoScreenScale,
+				screenRoot.Scale,
+				screenRoot.ScaleStrategy );
+
+			return;
+		}
+	}
+
+	private void ApplyBackground()
+	{
+		Texture finalTexture = Attributes.GetTexture( ProcessedName );
+		DisplayPanel.Style.SetBackgroundImage( finalTexture );
 	}
 }
