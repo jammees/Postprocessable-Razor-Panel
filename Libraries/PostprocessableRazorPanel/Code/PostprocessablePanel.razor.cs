@@ -121,21 +121,10 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 	public RenderAttributes Attributes => Root.Attributes;
 
 	/// <summary>
-	/// Do we have our display panel?
-	/// </summary>
-	public bool HasDisplayPanel => DisplayPanel is not null;
-
-	/// <summary>
-	/// Do we have our body panel, that is rendered to
-	/// a texture?
-	/// </summary>
-	public bool HasBodyPanel => Root.IsValid() && Root.HasBodyPanel;
-
-	/// <summary>
 	/// Think of this as the IsValid field. Tells if the panel
 	/// has everything it needs to do its job.
 	/// </summary>
-	public bool IsReady => this.IsValid() && Root.IsValid();
+	public bool IsReady => this.IsValid() && DisplayPanel.IsValid() && (Root?.IsReady ?? false);
 
 	/// <summary>
 	/// How big is the texture that we use to render
@@ -159,7 +148,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 	public override void Tick()
 	{
-		if ( Root.IsValid() is false || Root.HasBodyPanel is false || HasDisplayPanel is false )
+		if ( IsReady is false )
 			return;
 
 		Root.CopyPseudoClasses( this.PseudoClass );

@@ -18,7 +18,7 @@ public sealed partial class RenderingRoot : RootPanel
 
 	public Vector2Int TextureSize { get; private set; }
 
-	public bool HasBodyPanel => BodyPanel is not null;
+	public bool IsReady => BodyPanel.IsValid() && Renderer.IsValid();
 
 	internal Panel BodyPanel => GetChild( 0 );
 
@@ -67,16 +67,13 @@ public sealed partial class RenderingRoot : RootPanel
 		Attributes?.Clear();
 	}
 
-	// for some reason, the panel does not get deleted if this is present
-	//public override int GetHashCode() => HashCode.Combine( TextureSize, HasRenderingCallback );
-
 	/// <summary>
 	/// Applies the pseudo classes to the body panel
 	/// </summary>
 	/// <param name="classes"></param>
 	public void CopyPseudoClasses( PseudoClass classes )
 	{
-		if ( HasBodyPanel is false )
+		if ( BodyPanel.IsValid() is false )
 		{
 			Log.Error( "No body panel as child!" );
 			return;
@@ -90,6 +87,13 @@ public sealed partial class RenderingRoot : RootPanel
 		Attributes = new();
 
 		RenderedManually = true;
+
+		if ( RendererScene.IsValid() is false )
+		{
+			Log.Error( "RenderingRoot attached to invalid scene!" );
+			Delete( true );
+			return;
+		}
 
 		Renderer = new( RendererScene.SceneWorld );
 		Renderer.Batchable = false;
@@ -105,7 +109,7 @@ public sealed partial class RenderingRoot : RootPanel
 
 	private void OnRender( SceneObject obj )
 	{
-		if ( HasBodyPanel is false )
+		if ( BodyPanel.IsValid() is false )
 			return;
 
 		UpdatePadding();
