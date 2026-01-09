@@ -67,10 +67,6 @@ public sealed partial class RenderingRoot : RootPanel
 		Attributes?.Clear();
 	}
 
-	/// <summary>
-	/// Applies the pseudo classes to the body panel
-	/// </summary>
-	/// <param name="classes"></param>
 	public void CopyPseudoClasses( PseudoClass classes )
 	{
 		if ( BodyPanel.IsValid() is false )
