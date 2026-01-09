@@ -8,7 +8,7 @@
 
 <root>
 	<div class="panels">
-		<PostprocessablePanel @ref="PostprocessPanel" OnRendering="@OnRendering" TexturePadding="@TexturePadding">
+		<PostprocessablePanel OnRendering="@OnRendering" TexturePadding="@TexturePadding">
 			<Body>
 				<Card></Card>
 			</Body>
@@ -77,12 +77,11 @@
 
 	private DropDown ComputeDropdown;
 
-	PostprocessablePanel PostprocessPanel { get; set; }
 	ComputeShader Compute { get; set; }
 
-	private void OnRendering()
+	private void OnRendering(PostprocessablePanel panel)
 	{
-		if (PostprocessPanel.IsReady is false || Compute is null)
+		if (panel.IsReady is false || Compute is null)
 			return;
 
 		// if (Components.TryGet<ScreenPanel>(out var screenPanel))
@@ -92,13 +91,13 @@
 
 		// PostprocessPanel.TexturePadding = TexturePadding;
 
-		RenderAttributes attributes = PostprocessPanel.Attributes;
+		RenderAttributes attributes = panel.Attributes;
 
 		attributes.Set("NoiseTexture", NoiseTexture);
 		attributes.Set("DissolveStrength", Value);
 		attributes.Set("Curvature", Value);
 
-		PostprocessPanel.DispatchCompute(Compute);
+		panel.DispatchCompute(Compute);
 	}
 
 	private List<Option> BuildOptions()

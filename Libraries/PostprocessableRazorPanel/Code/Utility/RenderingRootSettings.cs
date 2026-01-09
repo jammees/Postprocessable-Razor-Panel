@@ -14,7 +14,7 @@ public class RenderingRootSettings()
 	[JsonIgnore, ReadOnly]
 	public bool HasRenderingCallback => OnRendering?.GetInvocationList().Length > 0;
 
-	public Action OnRendering { get; set; }
+	public Action<PostprocessablePanel> OnRendering { get; set; }
 
 	public string ProcessedName { get; set; } = DEFAULT_PROCESSED_NAME;
 

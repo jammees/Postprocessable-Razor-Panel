@@ -27,7 +27,7 @@ namespace PostprocessPanel;
 ///		the background. However, the texture that this is
 ///		rendered onto does not contain it!
 /// </summary>
-public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
+public sealed partial class PostprocessablePanel : Panel
 {
 	/// <summary>
 	/// Body fragment. This panel will be the one that gets
@@ -57,11 +57,11 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 
 	/// <summary>
 	/// Called once the body is rendered onto the texture
-	/// and saved it into the <see cref="RenderAttributes"/>. This is the time
-	/// to dispatch the <see cref="ComputeShader"/> to modify the texture.
+	/// and was saved it into the <see cref="RenderAttributes"/>. This is the time
+	/// to dispatch the <see cref="ComputeShader"/>s to modify the texture.
 	/// </summary>
 	[Parameter]
-	public Action OnRendering
+	public Action<PostprocessablePanel> OnRendering
 	{
 		get => RootSettings.OnRendering;
 		set => RootSettings.OnRendering = value;
@@ -143,7 +143,7 @@ public sealed partial class PostprocessablePanel : Panel, IRenderingRootAccessor
 		if ( firstTime is false )
 			return;
 
-		Root = new( Body, Scene, ref RootSettings );
+		Root = new( this );
 	}
 
 	public override void Tick()

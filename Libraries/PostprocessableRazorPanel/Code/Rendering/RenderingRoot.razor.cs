@@ -23,31 +23,21 @@ public sealed partial class RenderingRoot : RootPanel
 	internal Panel BodyPanel => GetChild( 0 );
 
 	internal Vector2 ScaledTexturePadding => (Vector2)RootSettings.TexturePadding / PanelUtils.GetScale( this, RendererScene.Camera.ScreenRect );
-	internal Scene RendererScene;
+
+	internal RenderingRootSettings RootSettings => ProcessablePanel?.RootSettings;
+
+	internal RenderFragment BodyFragment => ProcessablePanel?.Body;
+
+	internal Scene RendererScene => ProcessablePanel?.Scene;
 
 	internal SceneCustomObject Renderer;
 
-	internal RenderingRootSettings RootSettings;
+	internal PostprocessablePanel ProcessablePanel;
 
-	private RenderFragment _body;
 
-	public RenderingRoot(
-		RenderFragment body,
-		Scene scene,
-		ref RenderingRootSettings settings )
+	public RenderingRoot( PostprocessablePanel panel )
 	{
-		_body = body;
-		RootSettings = settings;
-		RendererScene = scene;
-
-		SetupForRendering();
-	}
-
-	public RenderingRoot( Scene scene, ref RenderingRootSettings settings )
-	{
-		_body = ChildContent;
-		RootSettings = settings;
-		RendererScene = scene;
+		ProcessablePanel = panel;
 
 		SetupForRendering();
 	}
@@ -137,6 +127,6 @@ public sealed partial class RenderingRoot : RootPanel
 		Graphics.RenderTarget = null;
 		target.Dispose();
 
-		RootSettings.OnRendering?.InvokeWithWarning();
+		RootSettings.OnRendering?.Invoke( ProcessablePanel );
 	}
 }
