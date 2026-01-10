@@ -20,7 +20,7 @@ public sealed partial class RenderingRoot : RootPanel
 
 	internal Panel BodyPanel => GetChild( 0 );
 
-	internal Vector2 ScaledTexturePadding => (Vector2)RootSettings.TexturePadding / PanelUtils.GetScale( this, RendererScene.Camera.ScreenRect );
+	internal Vector2 ScaledTexturePadding => (Vector2)GetPadding() / PanelUtils.GetScale( this, RendererScene.Camera.ScreenRect );
 
 	internal RenderingRootSettings RootSettings => ProcessablePanel?.RootSettings;
 
@@ -102,7 +102,10 @@ public sealed partial class RenderingRoot : RootPanel
 		Vector2 panelSize = BodyPanel.Box.Rect.Size;
 
 		TextureSize = new( panelSize.x.FloorToInt(), panelSize.y.FloorToInt() );
-		TextureSize += RootSettings.TexturePadding;
+		TextureSize += GetPadding();
+
+		if ( TextureSize.x < 1f || TextureSize.y < 1f )
+			return;
 
 		RenderTarget target = RenderTarget.GetTemporary( TextureSize.x, TextureSize.y, ImageFormat.RGBA8888, ImageFormat.None );
 
@@ -125,5 +128,35 @@ public sealed partial class RenderingRoot : RootPanel
 		target.Dispose();
 
 		RootSettings.OnRendering?.Invoke( ProcessablePanel );
+	}
+
+	private Vector2Int GetPadding()
+	{
+		switch ( RootSettings.PaddingStrategy )
+		{
+			case PaddingScale.UseRatio:
+				{
+					Rect bodyRect = BodyPanel.Box.Rect;
+					float bodyRatio = bodyRect.Width / bodyRect.Height;
+					int paddingSize = RootSettings.TexturePadding.x;
+
+					Vector2Int padding;
+					if ( bodyRatio < 1 )
+						padding = new( (paddingSize * bodyRatio).CeilToInt(), paddingSize );
+					else
+						padding = new( paddingSize, (paddingSize / bodyRatio).CeilToInt() );
+
+					return EnsureVectorIsEven( padding );
+				}
+			default:
+				return RootSettings.TexturePadding;
+		}
+	}
+
+	private Vector2Int EnsureVectorIsEven( Vector2Int vector )
+	{
+		return new Vector2Int(
+			vector.x.UnsignedMod( 2 ) == 0 ? vector.x : vector.x + 1,
+			vector.y.UnsignedMod( 2 ) == 0 ? vector.y : vector.y + 1 );
 	}
 }

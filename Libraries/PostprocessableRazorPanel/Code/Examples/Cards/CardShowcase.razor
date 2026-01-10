@@ -1,3 +1,4 @@
+@using System;
 @using Sandbox;
 @using Sandbox.UI;
 @using PostprocessPanel;
@@ -8,7 +9,7 @@
 
 <root>
 	<div class="panels">
-		<PostprocessablePanel OnRendering="@OnRendering" TexturePadding="@TexturePadding">
+		<PostprocessablePanel OnRendering="@OnRendering" TexturePadding="@TexturePadding" PaddingStrategy="@TexturePaddingScale">
 			<Body>
 				<Card></Card>
 			</Body>
@@ -51,6 +52,9 @@
 
 	[Property]
 	public Vector2Int TexturePadding { get; set; }
+
+	[Property]
+	public PaddingScale TexturePaddingScale { get; set; }
 
 	[Property]
 	public Texture NoiseTexture { get; set; }

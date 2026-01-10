@@ -15,9 +15,6 @@ namespace PostprocessPanel;
 ///		padding is not big enough. This will cause the
 ///		panel to be cut off.
 ///		
-///	- When setting the texture padding, make sure to take
-///		the aspect ratio of the body panel into account!
-///		
 /// - The padding is automatically scaled with the screen!
 /// 
 ///	- The body panel does not support backdrop filters
@@ -45,12 +42,26 @@ public sealed partial class PostprocessablePanel : Panel
 	/// Add extra pixels to texture in case
 	/// the effect requires so. Does not go below 0
 	/// on either of the axis.
+	/// 
+	/// Heavily recommended to make all components
+	/// be even!
 	/// </summary>
 	[Parameter]
 	public Vector2Int TexturePadding
 	{
 		get => RootSettings.TexturePadding;
 		set => RootSettings.TexturePadding = value;
+	}
+
+	/// <summary>
+	/// Decides how to apply <see cref="TexturePadding"/>.
+	/// By default, this is <see cref="PaddingScale.Manual"/>!
+	/// </summary>
+	[Parameter]
+	public PaddingScale PaddingStrategy
+	{
+		get => RootSettings.PaddingStrategy;
+		set => RootSettings.PaddingStrategy = value;
 	}
 
 	/// <summary>
