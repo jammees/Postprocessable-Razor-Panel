@@ -173,6 +173,57 @@
       "Children": []
     },
     {
+      "__guid": "6929837e-ea90-43ec-94f7-c567a8d6c611",
+      "__version": 2,
+      "Flags": 0,
+      "Name": "Example",
+      "Position": "-265.9683,-377.6317,301.0698",
+      "Rotation": "-0.1448582,0.2860239,0.4279631,0.8450171",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkFlags": 0,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.ScreenPanel",
+          "__guid": "fd9f7c63-b814-4a55-9b66-2d636abe0942",
+          "__enabled": true,
+          "Flags": 0,
+          "AutoScreenScale": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Opacity": 1,
+          "Scale": 1,
+          "ScaleStrategy": "ConsistentHeight",
+          "TargetCamera": null,
+          "ZIndex": 100
+        },
+        {
+          "__type": "PostprocessPanel.Examples.FullscreenPanelShowcase",
+          "__guid": "f4f07144-8b63-477e-8cb9-754b49668c07",
+          "__enabled": true,
+          "Flags": 0,
+          "Compute": "Dissolve",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Strength": 1
+        }
+      ],
+      "Children": []
+    },
+    {
       "__guid": "56259831-6225-4586-a966-487e290ea116",
       "__version": 2,
       "Flags": 0,
@@ -271,59 +322,7 @@
           "TexelSize": 1
         }
       ],
-      "Children": [
-        {
-          "__guid": "6929837e-ea90-43ec-94f7-c567a8d6c611",
-          "__version": 2,
-          "Flags": 0,
-          "Name": "Native ui",
-          "Position": "0.0000230372,-0.00001090765,4.128199",
-          "Rotation": "0,0,0,1",
-          "Scale": "1,1,1",
-          "Tags": "",
-          "Enabled": true,
-          "NetworkMode": 2,
-          "NetworkFlags": 0,
-          "NetworkOrphaned": 0,
-          "NetworkTransmit": true,
-          "OwnerTransfer": 1,
-          "Components": [
-            {
-              "__type": "Sandbox.ScreenPanel",
-              "__guid": "fd9f7c63-b814-4a55-9b66-2d636abe0942",
-              "__enabled": true,
-              "Flags": 0,
-              "AutoScreenScale": true,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "Opacity": 1,
-              "Scale": 1,
-              "ScaleStrategy": "ConsistentHeight",
-              "TargetCamera": null,
-              "ZIndex": 100
-            },
-            {
-              "__type": "PostprocessPanel.Examples.FullscreenPanelShowcase",
-              "__guid": "f4f07144-8b63-477e-8cb9-754b49668c07",
-              "__enabled": true,
-              "Flags": 0,
-              "Compute": "Dissolve",
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "Strength": 1
-            }
-          ],
-          "Children": []
-        }
-      ]
+      "Children": []
     }
   ],
   "SceneProperties": {

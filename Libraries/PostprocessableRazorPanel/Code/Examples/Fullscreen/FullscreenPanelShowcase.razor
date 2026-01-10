@@ -7,7 +7,7 @@
 @namespace PostprocessPanel.Examples
 
 <root>
-	<PostprocessablePanel OnRendering="@OnRendering">
+	<PostprocessablePanel class="example" OnRendering="@OnRendering">
 		<Display>
 			<div class="fullscreen"></div>
 		</Display>
@@ -37,6 +37,10 @@
 						This example might not be the most inspiring though...
 					</Label>
 				</div>
+				<div class="window big">
+					<Label>Imagine this as a statusbar</Label>
+					<Label>That has some really important information</Label>
+				</div>
 			</div>
 		</Body>
 	</PostprocessablePanel>
@@ -55,6 +59,10 @@
 
 	private void OnRendering(PostprocessablePanel panel)
 	{
-		
+		ComputeShader compute = new("example shaders/crtwarp.shader");
+
+		panel.Attributes.Set("Curvature", Strength);
+
+		panel.DispatchCompute(compute);
 	}
 }
