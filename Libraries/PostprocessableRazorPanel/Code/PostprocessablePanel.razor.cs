@@ -160,6 +160,7 @@ public sealed partial class PostprocessablePanel : Panel
 			return;
 
 		Root = new( this );
+		Root.Classes = Classes;
 	}
 
 	public override void Tick()
