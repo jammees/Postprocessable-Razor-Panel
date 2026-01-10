@@ -32,6 +32,8 @@ public sealed partial class RenderingRoot : RootPanel
 
 	internal PostprocessablePanel ProcessablePanel;
 
+	private bool _appliedStylesheets;
+
 	public RenderingRoot( PostprocessablePanel panel )
 	{
 		ProcessablePanel = panel;
@@ -52,6 +54,22 @@ public sealed partial class RenderingRoot : RootPanel
 	{
 		Renderer?.Delete();
 		Attributes?.Clear();
+	}
+
+	internal void TryApplyStylesheet()
+	{
+		if ( _appliedStylesheets is true )
+			return;
+
+		if ( ProcessablePanel?.IsReady is false )
+			return;
+
+		_appliedStylesheets = true;
+
+		foreach ( var item in ProcessablePanel.DisplayPanel.AllStyleSheets )
+		{
+			BodyPanel.StyleSheet.Add( item );
+		}
 	}
 
 	public void CopyPseudoClasses( PseudoClass classes )

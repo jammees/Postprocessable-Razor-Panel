@@ -168,6 +168,7 @@ public sealed partial class PostprocessablePanel : Panel
 			return;
 
 		Root.CopyPseudoClasses( this.PseudoClass );
+		Root.TryApplyStylesheet();
 
 		UpdateAutoScaling();
 		ApplyBackground();
