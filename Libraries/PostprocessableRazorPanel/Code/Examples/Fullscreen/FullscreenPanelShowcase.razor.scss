@@ -1,20 +1,45 @@
-FullscreenPanelShowcase
-{
+FullscreenPanelShowcase {
 	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background-color: #444;
-	justify-content: center;
-	align-items: center;
-	font-weight: bold;
-	border-radius: 20px;
 
-	.title
+	> PostprocessablePanel
 	{
-		font-size: 25px;
-		font-family: Poppins;
-		color: #fff;
+		> .fullscreen {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+		}
+	}
+}
+
+RenderingRoot {
+	> .container {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		justify-content: center;
+		align-items: center;
+
+		> .window {
+			width: 1000px;
+			height: 650px;
+			background-color: rgba(black, 0.8);
+			padding: 20px;
+			flex-direction: column;
+			gap: 15px;
+
+			> label {
+				color: white;
+				font-size: 30px;
+				font-family: Poppins;
+			}
+		}
 	}
 }

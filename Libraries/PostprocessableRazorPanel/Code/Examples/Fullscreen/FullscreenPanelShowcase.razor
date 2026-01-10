@@ -1,19 +1,60 @@
 @using Sandbox;
 @using Sandbox.UI;
+@using PostprocessPanel;
+@using System.Collections.Generic;
+@using static PostprocessPanel.Examples.Constants
 @inherits PanelComponent
-@namespace Sandbox
+@namespace PostprocessPanel.Examples
 
 <root>
-	<div class="title">@MyStringValue</div>
+	<PostprocessablePanel OnRendering="@OnRendering">
+		<Display>
+			<div class="fullscreen"></div>
+		</Display>
+		<Body>
+			<div class="container">
+				<div class="window">
+					<Label>
+						Hello world!
+					</Label>
+					<Label>
+						The entire screen, including this panel is being passed through
+						a postprocessable panel. This means we can apply any kind
+						of effect to all of the panels!
+					</Label>
+					<Label>
+						To mess around with the settings, in the Hierarchy
+						find "Example" component, once there the
+						"Fullscreen panel showcase" component has all the
+						settings.
+					</Label>
+					<Label>
+						On a side note, the library now copies all of the
+						stylesheets of the display panel, so no more components
+						are required!
+					</Label>
+					<Label>
+						This example might not be the most inspiring though...
+					</Label>
+				</div>
+			</div>
+		</Body>
+	</PostprocessablePanel>
 </root>
 
 @code
 {
+	[Property]
+	public ComputeTypes Compute { get; set; }
 
-	[Property, TextArea] public string MyStringValue { get; set; } = "Hello World!";
+	[Range(0f, 7f), Step(0.1f)]
+	[ShowIf(nameof(Compute), ComputeTypes.Dissolve)]
+	[ShowIf(nameof(Compute), ComputeTypes.CrtDistortion)]
+	[Property]
+	public float Strength { get; set; } = 1f;
 
-	/// <summary>
-	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
-	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine( MyStringValue );
+	private void OnRendering(PostprocessablePanel panel)
+	{
+		
+	}
 }
